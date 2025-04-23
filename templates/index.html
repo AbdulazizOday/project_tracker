@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Progress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .project-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .project-name {
+            width: 150px; /* Adjust as needed */
+        }
+
+        .progress-bar {
+            width: 180px;
+            height: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            margin-right: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stalled .progress {
+            background-color: #f44336;
+        }
+
+        .project-links {
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .project-row.active .project-links {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .project-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+
+        .project-links i {
+            cursor: pointer;
+        }
+
+        .task-list {
+            display: none; /* Initially hide the task list */
+            margin-left: 20px;
+        }
+
+        .activity-list {
+            display: none; /* Initially hide the activity list */
+            margin-left: 20px;
+        }
+
+        .show-details-button {
+            cursor: pointer;
+            color: #666;
+            font-size: 1em; /* Reduced from 1.2em */
+        }
+
+        .show-details-button:hover {
+            color: #333;
+        }
+
+        .details-container {
+            margin-top: 5px;
+            display: none; /* Initially hidden */
+        }
+        .stalled-text {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-weight: bold;
+          z-index: 2; /* Increase z-index to ensure it's always on top */
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add text shadow for better visibility */
+        }
+
+        .completed .progress {
+            background-color: #4CAF50; /* Green color for completed projects */
+        }
+
+        .postponed .progress {
+            background-color: #FF9800; /* Orange color for postponed projects */
+        }
+
+        .project-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 0;
+        }
+
+        .project-actions a {
+            color: #666;
+            text-decoration: none;
+            font-size: 1em; /* Reduced from 1.2em */
+            flex-shrink: 0;
+        }
+
+        .project-actions a:hover {
+            color: #333;
+        }
+
+        .icon-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .icon-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .icon-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+    <script>
+        let activeRow = null;
+
+        function toggleDetails(projectId) {
+            var detailsContainer = document.getElementById("details-" + projectId);
+            var taskList = document.getElementById("tasks-" + projectId);
+            var activityList = document.getElementById("activities-" + projectId);
+
+            if (detailsContainer.style.display === "none") {
+                detailsContainer.style.display = "block";
+                taskList.style.display = "block";
+                activityList.style.display = "block";
+            } else {
+                detailsContainer.style.display = "none";
+                taskList.style.display = "none";
+                activityList.style.display = "none";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle progress bar clicks
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                bar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const row = this.closest('.project-row');
+                    
+                    // If clicking the same row that's already active, hide it
+                    if (row === activeRow) {
+                        row.classList.remove('active');
+                        activeRow = null;
+                        return;
+                    }
+                    
+                    // Remove active class from previous row
+                    if (activeRow) {
+                        activeRow.classList.remove('active');
+                    }
+                    
+                    // Add active class to clicked row
+                    row.classList.add('active');
+                    activeRow = row;
+                });
+            });
+
+            // Handle clicks outside of project rows and progress bars
+            document.addEventListener('click', function(e) {
+                // Check if click is outside project-row or on a non-progress-bar element
+                if (!e.target.closest('.progress-bar')) {
+                    if (activeRow) {
+                        activeRow.classList.remove('active');
+                        activeRow = null;
+                    }
+                }
+            });
+
+            // Handle hover effect only when no row is active
+            document.querySelectorAll('.project-row').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    if (!activeRow) {
+                        this.classList.add('active');
+                    }
+                });
+
+                row.addEventListener('mouseleave', function() {
+                    if (!activeRow) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Project Progress</h1>
+    <a href="{{ url_for('add_project') }}">Add Project</a><br><br>
+
+    <h2>Projects</h2>
+    {% for project_id, project in active_projects.items() %}
+        <div class="project-row {% if project.get('completed') %}completed{% elif is_stalled(project) %}stalled{% endif %}">
+            <div class="project-name">{{ project.name }}</div>
+            <div class="progress-bar">
+                <div class="progress" style="width: {% if project.get('completed') %}100{% else %}{{ project.progress }}{% endif %}%;">
+                    {% if project.get('completed') %}
+                        <span class="stalled-text">Completed on {{ project.completion_date }}</span>
+                    {% elif is_stalled(project) %}
+                        <span class="stalled-text">Stalled</span>
+                    {% else %}
+                        {{ project.progress }}%
+                    {% endif %}
+                </div>
+            </div>
+            <div class="project-links">
+                {% if not project.get('completed') %}
+                <a href="{{ url_for('add_activity', project_id=project_id) }}" class="icon-tooltip">
+                    <i class="fas fa-plus-circle"></i>
+                    <span class="tooltip-text">Add Activity</span>
+                </a>
+                <a href="{{ url_for('add_task', project_id=project_id) }}" class="icon-tooltip">
+                    <i class="fas fa-tasks"></i>
+                    <span class="tooltip-text">Add Task</span>
+                </a>
+                {% endif %}
+                <span class="show-details-button icon-tooltip" onclick="toggleDetails('{{ project_id }}')">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="tooltip-text">Show/Hide Details</span>
+                </span>
+                <div class="project-actions">
+                    {% if not project.get('completed') %}
+                    <a href="{{ url_for('edit_stall_period', project_id=project_id) }}" class="icon-tooltip">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="tooltip-text">Edit Stall Period ({{ project.get('stall_period', 3) }} days)</span>
+                    </a>
+                    <a href="{{ url_for('complete_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to mark this project as complete?')">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="tooltip-text">Complete Project</span>
+                    </a>
+                    <a href="{{ url_for('postpone_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to postpone this project?')">
+                        <i class="fas fa-pause-circle"></i>
+                        <span class="tooltip-text">Postpone Project</span>
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('resume_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to resume this project?')">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="tooltip-text">Resume Project</span>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('cancel_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to cancel this project?')">
+                        <i class="fas fa-ban"></i>
+                        <span class="tooltip-text">Cancel Project</span>
+                    </a>
+                    <a href="{{ url_for('delete_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to delete this project?')">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip-text">Delete Project</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="details-container" id="details-{{ project_id }}">
+            <h3>Tasks:</h3>
+            <ul class="task-list" id="tasks-{{project_id}}">
+                {% for task in project.get("tasks", []) %}
+                <li>
+                    {{ task.get("description", "No Description") }}
+                    {% if task.get("completed") %}
+                    (Completed)
+                    {% else %}
+                    <a href="{{ url_for('complete_task', project_id=project_id, task_index=loop.index0) }}">Complete</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_task', project_id=project_id, task_index=loop.index0) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to delete this task?')">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip-text">Delete Task</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <h3>Activities:</h3>
+            <ul class="activity-list" id="activities-{{project_id}}">
+                {% for activity in project.get("activities", []) %}
+                <li>{{ activity.date }}: {{ activity.description }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    {% if postponed_projects %}
+    <h2>Postponed Projects</h2>
+    {% for project_id, project in postponed_projects.items() %}
+        <div class="project-row postponed">
+            <div class="project-name">{{ project.name }}</div>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ project.progress }}%;">
+                    <span class="stalled-text">Postponed on {{ project.postponement_date }}</span>
+                </div>
+            </div>
+            <div class="project-links">
+                <a href="{{ url_for('add_activity', project_id=project_id) }}" class="icon-tooltip">
+                    <i class="fas fa-plus-circle"></i>
+                    <span class="tooltip-text">Add Activity</span>
+                </a>
+                <a href="{{ url_for('add_task', project_id=project_id) }}" class="icon-tooltip">
+                    <i class="fas fa-tasks"></i>
+                    <span class="tooltip-text">Add Task</span>
+                </a>
+                <span class="show-details-button icon-tooltip" onclick="toggleDetails('{{ project_id }}')">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="tooltip-text">Show/Hide Details</span>
+                </span>
+                <div class="project-actions">
+                    <a href="{{ url_for('edit_stall_period', project_id=project_id) }}" class="icon-tooltip">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="tooltip-text">Edit Stall Period ({{ project.get('stall_period', 3) }} days)</span>
+                    </a>
+                    <a href="{{ url_for('complete_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to mark this project as complete?')">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="tooltip-text">Complete Project</span>
+                    </a>
+                    <a href="{{ url_for('resume_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to resume this project?')">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="tooltip-text">Resume Project</span>
+                    </a>
+                    <a href="{{ url_for('delete_project', project_id=project_id) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to delete this project?')">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip-text">Delete Project</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="details-container" id="details-{{ project_id }}">
+            <h3>Tasks:</h3>
+            <ul class="task-list" id="tasks-{{project_id}}">
+                {% for task in project.get("tasks", []) %}
+                <li>
+                    {{ task.get("description", "No Description") }}
+                    {% if task.get("completed") %}
+                    (Completed)
+                    {% else %}
+                    <a href="{{ url_for('complete_task', project_id=project_id, task_index=loop.index0) }}">Complete</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_task', project_id=project_id, task_index=loop.index0) }}" class="icon-tooltip" onclick="return confirm('Are you sure you want to delete this task?')">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip-text">Delete Task</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <h3>Activities:</h3>
+            <ul class="activity-list" id="activities-{{project_id}}">
+                {% for activity in project.get("activities", []) %}
+                <li>{{ activity.date }}: {{ activity.description }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if cancelled_projects %}
+    <hr style="margin: 30px 0;">
+    <div class="cancelled-projects">
+        <h3>Cancelled Projects</h3>
+        <ul style="color: #666; list-style-type: none; padding-left: 0;">
+            {% for project_id, project in cancelled_projects.items() %}
+                <li style="margin-bottom: 5px;">
+                    {{ project.name }}
+                    <span style="color: #999; font-size: 0.9em;">(Cancelled on {{ project.cancellation_date }})</span>
+                    <a href="{{ url_for('resume_project', project_id=project_id) }}" class="icon-tooltip" style="margin-left: 10px;" onclick="return confirm('Are you sure you want to resume this project?')">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="tooltip-text">Resume Project</span>
+                    </a>
+                    <a href="{{ url_for('delete_project', project_id=project_id) }}" class="icon-tooltip" style="margin-left: 5px;" onclick="return confirm('Are you sure you want to delete this project?')">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip-text">Delete Project</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>

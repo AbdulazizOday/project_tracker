@@ -1,0 +1,195 @@
+{
+    "1": {
+        "name": "Medical AI",
+        "description": "Simple, Smart Healthcare",
+        "tasks": [
+            {
+                "description": "Update SDLC files",
+                "completed": true
+            },
+            {
+                "description": "Generate tentative SDLC files generated",
+                "completed": false
+            },
+            {
+                "description": "Decide on a framework",
+                "completed": false,
+                "created_date": "2025-03-23",
+                "completed_date": null
+            }
+        ],
+        "activities": [
+            {
+                "date": "2025-03-13",
+                "description": "Tentative SDLC files generated"
+            }
+        ],
+        "cancelled": true,
+        "cancellation_date": "2025-04-20"
+    },
+    "2": {
+        "name": "Alaabso App",
+        "description": "",
+        "priority": "High",
+        "tasks": [
+            {
+                "description": "Professional Logo Design",
+                "completed": true,
+                "created_date": "2025-03-23",
+                "completed_date": "2025-04-12"
+            },
+            {
+                "description": "Copy Temu design",
+                "completed": false,
+                "created_date": "2025-03-24",
+                "completed_date": null
+            },
+            {
+                "description": "Refine Temu design",
+                "completed": false,
+                "created_date": "2025-03-29",
+                "completed_date": null
+            }
+        ],
+        "activities": [
+            {
+                "date": "2025-03-24",
+                "description": "Purchase Cursor"
+            }
+        ],
+        "cancelled": true,
+        "cancellation_date": "2025-04-19"
+    },
+    "3": {
+        "name": "Camaldoon",
+        "description": "Jobs mobile app",
+        "tasks": [],
+        "activities": [],
+        "cancelled": true,
+        "cancellation_date": "2025-04-20"
+    },
+    "4": {
+        "name": "News Site",
+        "description": "Wakaalad Warar",
+        "tasks": [],
+        "activities": [],
+        "cancelled": true,
+        "cancellation_date": "2025-04-20"
+    },
+    "6": {
+        "name": "Somtel Chatbot",
+        "description": "",
+        "priority": "High",
+        "tasks": [
+            {
+                "description": "mohamed.ns@somtelnetwork.net",
+                "completed": true,
+                "created_date": "2025-03-29",
+                "completed_date": "2025-04-14"
+            }
+        ],
+        "activities": [],
+        "completed": true,
+        "completion_date": "2025-04-21"
+    },
+    "7": {
+        "name": "Xeeldheere Websites",
+        "description": "AI Websites",
+        "priority": "Medium",
+        "tasks": [
+            {
+                "description": "Announcments",
+                "completed": true,
+                "created_date": "2025-04-12",
+                "completed_date": "2025-04-21"
+            },
+            {
+                "description": "AI questions",
+                "completed": false,
+                "created_date": "2025-04-12",
+                "completed_date": null
+            },
+            {
+                "description": "Find a free hosting with edit files capability",
+                "completed": true,
+                "created_date": "2025-04-20",
+                "completed_date": "2025-04-21"
+            },
+            {
+                "description": "Add file upload and outo convert to .md syntax",
+                "completed": true,
+                "created_date": "2025-04-21",
+                "completed_date": "2025-04-21"
+            }
+        ],
+        "activities": [
+            {
+                "date": "2025-03-29",
+                "description": "Khadar Xaaji Presentation"
+            }
+        ],
+        "stall_period": 3
+    },
+    "8": {
+        "name": "UOH",
+        "description": "",
+        "priority": "High",
+        "tasks": [
+            {
+                "description": "Emails",
+                "completed": false,
+                "created_date": "2025-04-22",
+                "completed_date": null
+            },
+            {
+                "description": "Library",
+                "completed": false,
+                "created_date": "2025-04-22",
+                "completed_date": null
+            }
+        ],
+        "activities": []
+    },
+    "9": {
+        "name": "Protein - Caano Lo'aad",
+        "description": "",
+        "priority": "High",
+        "tasks": [
+            {
+                "description": "Caagad caano ah",
+                "completed": true,
+                "created_date": "2025-04-22",
+                "completed_date": "2025-04-22"
+            },
+            {
+                "description": "27 April",
+                "completed": false,
+                "created_date": "2025-04-22",
+                "completed_date": null
+            }
+        ],
+        "activities": [],
+        "stall_period": 5
+    },
+    "10": {
+        "name": "Xiirasho",
+        "description": "",
+        "priority": "High",
+        "tasks": [
+            {
+                "description": "22 April",
+                "completed": true,
+                "created_date": "2025-04-22",
+                "completed_date": "2025-04-22"
+            },
+            {
+                "description": "1 May",
+                "completed": false,
+                "created_date": "2025-04-22",
+                "completed_date": null
+            }
+        ],
+        "activities": [],
+        "stall_period": 3
+    }
+}
